@@ -77,6 +77,32 @@ function loadPackageDetails() {
   } else {
     container.innerHTML = '<div class="form-wrapper"><p>Package not found.</p></div>'
   }
+
+  loadRelatedPackages(id)
+}
+
+function loadRelatedPackages(currentId) {
+  const packages = JSON.parse(localStorage.getItem("packages"))
+  const related = packages.filter((p) => p.id != currentId).slice(0, 3)
+  const container = document.getElementById("related-packages")
+
+  if (container) {
+    container.innerHTML = related
+      .map(
+        (pkg) => `
+            <div class="card">
+                <img src="${pkg.image}" alt="${pkg.title}">
+                <div class="card-body">
+                    <h3>${pkg.title}</h3>
+                    <p class="card-price">$${pkg.price}</p>
+                    <p>${pkg.desc.substring(0, 80)}...</p>
+                    <a href="details.html?id=${pkg.id}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        `,
+      )
+      .join("")
+  }
 }
 
 function handleBookingSubmit(e) {
@@ -97,8 +123,15 @@ function handleBookingSubmit(e) {
   bookings.push(formData)
   localStorage.setItem("bookings", JSON.stringify(bookings))
 
-  alert("✅ Booking Enquiry Sent Successfully! We will contact you soon.")
-  window.location.href = "index.html"
+  const btn = document.querySelector('button[type="submit"]')
+  const originalText = btn.textContent
+  btn.textContent = "✅ Booking Confirmed!"
+  btn.disabled = true
+
+  setTimeout(() => {
+    alert("🎉 Booking Enquiry Sent Successfully! We will contact you soon.")
+    window.location.href = "index.html"
+  }, 1000)
 }
 
 // --- ADMIN FUNCTIONS ---
@@ -112,7 +145,10 @@ function adminLogin(e) {
     sessionStorage.setItem("admin_logged_in", "true")
     checkSession()
   } else {
-    alert("❌ Invalid Credentials!")
+    const form = e.target
+    form.style.animation = "shake 0.4s"
+    setTimeout(() => (form.style.animation = ""), 400)
+    alert("❌ Invalid Credentials! Use: admin / admin123")
   }
 }
 
@@ -163,9 +199,11 @@ function loadAdminData() {
 
   const bookings = JSON.parse(localStorage.getItem("bookings"))
   const bookTable = document.querySelector("#bookingsTable tbody")
-  bookTable.innerHTML = bookings
-    .map(
-      (b) => `
+  bookTable.innerHTML =
+    bookings.length > 0
+      ? bookings
+          .map(
+            (b) => `
         <tr>
             <td>${b.name}</td>
             <td>${b.destination}</td>
@@ -173,8 +211,9 @@ function loadAdminData() {
             <td>${b.phone}</td>
         </tr>
     `,
-    )
-    .join("")
+          )
+          .join("")
+      : '<tr><td colspan="4" style="text-align: center; color: #999;">No bookings yet</td></tr>'
 }
 
 function addPackage(e) {
@@ -193,7 +232,7 @@ function addPackage(e) {
   localStorage.setItem("packages", JSON.stringify(packages))
   e.target.reset()
   loadAdminData()
-  alert("✅ Package Added!")
+  alert("✅ Package Added Successfully!")
 }
 
 function deletePackage(id) {

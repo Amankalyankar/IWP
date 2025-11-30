@@ -9,9 +9,9 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo"><a href="index.html">✈️ TravelPro</a></div>
+            <div class="logo">✈️ TravelPro</div>
             <ul class="nav-links">
-                
+                <li><a href="index.html">Home</a></li>
                 <li><a href="packages.html">Packages</a></li>
                 <li><a href="admin.html">Admin</a></li>
             </ul>
@@ -22,10 +22,48 @@
         <div class="hero-content">
             <h1>Explore the World with Us</h1>
             <p>Discover unforgettable journeys to breathtaking destinations</p>
-            <a href="packages.html" class="btn btn-primary">Discover Tours</a>
+            <a href="packages.html" class="btn btn-primary btn-large">Discover Tours</a>
         </div>
     </header>
 
+    <!-- Added rich featured packages preview section -->
+    <section class="featured-section">
+        <div class="container">
+            <h2 class="page-title">Featured Experiences</h2>
+            <p class="page-subtitle">Start your adventure with our most popular destinations</p>
+            <div class="featured-grid">
+                <div class="featured-card">
+                    <div class="featured-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="featured-card-content">
+                        <h3>Europe Explorer</h3>
+                        <p>12-day immersive cultural tour</p>
+                        <span class="price-tag">$1,200+</span>
+                    </div>
+                </div>
+                <div class="featured-card">
+                    <div class="featured-card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                    <div class="featured-card-content">
+                        <h3>Tropical Paradise</h3>
+                        <p>7-day beach escape to exotic isles</p>
+                        <span class="price-tag">$800+</span>
+                    </div>
+                </div>
+                <div class="featured-card">
+                    <div class="featured-card-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                    <div class="featured-card-content">
+                        <h3>Mountain Adventure</h3>
+                        <p>6-day trekking & hiking expedition</p>
+                        <span class="price-tag">$1,500+</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="packages.html" class="btn btn-primary">View All Packages</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced about section with better visual structure -->
     <section id="about" class="container section-padding">
         <div class="content-box">
             <h2>Why Choose TravelPro?</h2>
@@ -46,11 +84,45 @@
                     <h3>Expert Support</h3>
                     <p>24/7 travel assistance</p>
                 </div>
+                <div class="feature">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Best Prices</h3>
+                    <p>Guaranteed lowest rates</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="container section-padding bg-light">
+    <!-- Added testimonials section for social proof -->
+    <section class="testimonials-section bg-light">
+        <div class="container section-padding">
+            <h2 class="page-title">Loved by Travelers</h2>
+            <p class="page-subtitle">Join thousands of happy customers</p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p>"An absolutely amazing experience! The entire trip was perfectly organized and memorable. Highly recommended!"</p>
+                    <strong>Sarah Johnson</strong>
+                    <span>Paris Trip, 2024</span>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Best travel service ever. The team went above and beyond to make our Bali vacation unforgettable."</p>
+                    <strong>Michael Chen</strong>
+                    <span>Bali Retreat, 2024</span>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+                    <p>"Worth every penny! Professional, responsive, and they handle all the details so you can just enjoy the trip."</p>
+                    <strong>Emma Davis</strong>
+                    <span>Alps Adventure, 2024</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced contact section -->
+    <section id="contact" class="container section-padding">
         <div class="content-box">
             <h2>Get in Touch</h2>
             <p style="margin-bottom: 2rem;">Have questions? We're here to help plan your perfect getaway.</p>
