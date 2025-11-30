@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Journey - TravelPro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"><a href="index.html">✈️ TravelPro</a></div>
+        </div>
+    </nav>
+
+    <div class="container section-padding">
+        <div class="form-wrapper">
+            <h1>Complete Your Booking</h1>
+            <p class="form-subtitle">Fill in your details to secure your adventure</p>
+            
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
+                <div class="form-group">
+                    <label for="destination">Package / Destination *</label>
+                    <input type="text" id="destination" name="destination" required readonly>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="persons">Number of Travelers *</label>
+                        <input type="number" id="persons" name="persons" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Preferred Travel Date *</label>
+                    <input type="date" id="date" name="travel_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Special Requests</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Let us know any special preferences..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 TravelPro. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('destination').value = urlParams.get('dest') || '';
+    </script>
+</body>
+</html>
