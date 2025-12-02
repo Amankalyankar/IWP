@@ -1,246 +1,266 @@
-// --- MOCK DATABASE INITIALIZATION ---
-if (!localStorage.getItem("packages")) {
-  const initialPackages = [
-    {
-      id: 1,
-      title: "Paris Getaway",
-      price: 1200,
-      image: "https://via.placeholder.com/400x300?text=Paris",
-      desc: "Experience 5 magical days in the City of Light. This package includes 4-star hotel accommodations in the heart of Paris, guided tours of iconic landmarks including the Eiffel Tower and Louvre Museum, fine dining experiences, and river cruises along the Seine.",
-    },
-    {
-      id: 2,
-      title: "Bali Beach Retreat",
-      price: 800,
-      image: "https://via.placeholder.com/400x300?text=Bali",
-      desc: "Escape to paradise with 7 days in Bali. Relax on pristine sandy beaches, enjoy luxury spa treatments, explore ancient temples, visit rice terraces, and experience vibrant local culture. All-inclusive package with beachfront resort stay.",
-    },
-    {
-      id: 3,
-      title: "Swiss Alps Hiking",
-      price: 1500,
-      image: "https://via.placeholder.com/400x300?text=Alps",
-      desc: "Adventure seekers, rejoice! 6 days of guided hiking through breathtaking mountain scenery. Includes stays in charming alpine lodges, expert mountain guides, meals featuring local Swiss cuisine, and unforgettable views at every turn.",
-    },
-  ]
-  localStorage.setItem("packages", JSON.stringify(initialPackages))
+async function fetchJSON(url, options = {}) {
+    const res = await fetch(url, options);
+    return await res.json();
 }
 
-if (!localStorage.getItem("bookings")) {
-  localStorage.setItem("bookings", JSON.stringify([]))
-}
+/* FRONTEND LOAD */
 
-// --- FRONTEND FUNCTIONS ---
+async function loadPackagesFrontend() {
+  const grid = document.getElementById("package-grid");
+  if (!grid) return;
 
-function loadPackagesFrontend() {
-  const packages = JSON.parse(localStorage.getItem("packages"))
-  const grid = document.getElementById("package-grid")
+  try {
+    const res = await fetch("get_packages.php");
+    const packages = await res.json();
 
-  if (grid) {
+    if (!Array.isArray(packages) || packages.length === 0) {
+      grid.innerHTML = "<p>No packages available.</p>";
+      return;
+    }
+
     grid.innerHTML = packages
       .map(
         (pkg) => `
-            <div class="card">
-                <img src="${pkg.image}" alt="${pkg.title}">
-                <div class="card-body">
-                    <h3>${pkg.title}</h3>
-                    <p class="card-price">$${pkg.price}</p>
-                    <p>${pkg.desc.substring(0, 100)}...</p>
-                    <a href="details.html?id=${pkg.id}" class="btn btn-primary">View Details</a>
+        <div class="card">
+          <div style="overflow:hidden;">
+            <img src="${pkg.image}" alt="${pkg.title}">
+          </div>
+          <div class="card-body">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>${pkg.title}</h3>
+              <span class="card-price">$${pkg.price}</span>
+            </div>
+            <p>${(pkg.desc_text || "").substring(0, 90)}...</p>
+            <a href="details.html?id=${pkg.id}" class="btn btn-primary" style="width:100%">Explore Details</a>
+          </div>
+        </div>
+      `
+      )
+      .join("");
+  } catch (err) {
+    console.error("Error loading packages:", err);
+    grid.innerHTML = "<p>Failed to load packages.</p>";
+  }
+}
+async function loadPackageDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const container = document.getElementById("detail-container");
+    const relatedContainer = document.getElementById("related-packages");
+
+    try {
+        const packages = await fetchJSON("get_packages.php");
+        const pkg = packages.find(p => String(p.id) === String(id));
+
+        if (!pkg) {
+            container.innerHTML = "<p>Package not found.</p>";
+            return;
+        }
+
+        // Main detail view
+        container.innerHTML = `
+            <div class="package-detail-view card" style="padding:0;">
+                <img src="${pkg.image}" style="height:400px;width:100%;object-fit:cover">
+
+                <div style="padding:2.5rem">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <h1>${pkg.title}</h1>
+                        <span class="card-price">$${pkg.price}</span>
+                    </div>
+
+                    <p style="line-height:1.8;">
+                        ${pkg.desc_text || pkg.description}
+                    </p>
+
+                    <hr style="margin:2rem 0">
+
+                    <a href="booking.html?dest=${encodeURIComponent(pkg.title)}"
+                        class="btn btn-primary btn-large">
+                        Book This Package
+                    </a>
                 </div>
             </div>
-        `,
-      )
-      .join("")
-  }
-}
+        `;
 
-function loadPackageDetails() {
-  const params = new URLSearchParams(window.location.search)
-  const id = params.get("id")
-  const packages = JSON.parse(localStorage.getItem("packages"))
-  const pkg = packages.find((p) => p.id == id)
+        // Related packages
+        const related = packages.filter(p => String(p.id) !== String(id)).slice(0,3);
 
-  const container = document.getElementById("detail-container")
-
-  if (pkg) {
-    container.innerHTML = `
-            <div class="package-detail-view">
-                <h1>${pkg.title}</h1>
-                <img src="${pkg.image}" alt="${pkg.title}">
-                <h2>$${pkg.price}</h2>
-                <p>${pkg.desc}</p>
-                <br>
-                <a href="booking.html?dest=${encodeURIComponent(pkg.title)}" class="btn btn-primary btn-large">Book This Package</a>
-            </div>
-        `
-  } else {
-    container.innerHTML = '<div class="form-wrapper"><p>Package not found.</p></div>'
-  }
-
-  loadRelatedPackages(id)
-}
-
-function loadRelatedPackages(currentId) {
-  const packages = JSON.parse(localStorage.getItem("packages"))
-  const related = packages.filter((p) => p.id != currentId).slice(0, 3)
-  const container = document.getElementById("related-packages")
-
-  if (container) {
-    container.innerHTML = related
-      .map(
-        (pkg) => `
+        relatedContainer.innerHTML = related.map(p => `
             <div class="card">
-                <img src="${pkg.image}" alt="${pkg.title}">
+                <img src="${p.image}">
                 <div class="card-body">
-                    <h3>${pkg.title}</h3>
-                    <p class="card-price">$${pkg.price}</p>
-                    <p>${pkg.desc.substring(0, 80)}...</p>
-                    <a href="details.html?id=${pkg.id}" class="btn btn-primary">View Details</a>
+                    <h3>${p.title}</h3>
+                    <p class="card-price">$${p.price}</p>
+                    <a href="details.html?id=${p.id}" class="btn btn-primary">View</a>
                 </div>
             </div>
-        `,
-      )
-      .join("")
-  }
+        `).join("");
+
+    } catch (err) {
+        console.error("Details load failed:", err);
+        container.innerHTML = "<p>Failed to load package details.</p>";
+    }
 }
+
+
+/* BOOKING */
 
 function handleBookingSubmit(e) {
-  e.preventDefault()
+    e.preventDefault();
 
-  const formData = {
-    id: Date.now(),
-    destination: document.getElementById("destination").value,
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    date: document.getElementById("date").value,
-    persons: document.getElementById("persons").value,
-    message: document.getElementById("message").value,
-  }
+    let form = document.getElementById("bookingForm");
 
-  const bookings = JSON.parse(localStorage.getItem("bookings"))
-  bookings.push(formData)
-  localStorage.setItem("bookings", JSON.stringify(bookings))
-
-  const btn = document.querySelector('button[type="submit"]')
-  const originalText = btn.textContent
-  btn.textContent = "✅ Booking Confirmed!"
-  btn.disabled = true
-
-  setTimeout(() => {
-    alert("🎉 Booking Enquiry Sent Successfully! We will contact you soon.")
-    window.location.href = "index.html"
-  }, 1000)
+    fetch("booking.php", {
+        method: "POST",
+        body: new FormData(form)
+    })
+    .then(r => r.json())
+    .then(d => {
+        if(d.success){
+            alert("✅ Booking saved!");
+            window.location.href = "index.html";
+        }else{
+            alert("❌ "+d.message);
+        }
+    });
 }
 
-// --- ADMIN FUNCTIONS ---
+/* ADMIN */
 
 function adminLogin(e) {
-  e.preventDefault()
-  const user = document.getElementById("adminUser").value
-  const pass = document.getElementById("adminPass").value
+    e.preventDefault();
 
-  if (user === "admin" && pass === "admin123") {
-    sessionStorage.setItem("admin_logged_in", "true")
-    checkSession()
-  } else {
-    const form = e.target
-    form.style.animation = "shake 0.4s"
-    setTimeout(() => (form.style.animation = ""), 400)
-    alert("❌ Invalid Credentials! Use: admin / admin123")
-  }
-}
+    const user = document.getElementById("adminUser").value;
+    const pass = document.getElementById("adminPass").value;
 
-function checkSession() {
-  const isLoggedIn = sessionStorage.getItem("admin_logged_in")
-  const loginSec = document.getElementById("login-section")
-  const dashSec = document.getElementById("dashboard-section")
-
-  if (loginSec && dashSec) {
-    if (isLoggedIn) {
-      loginSec.classList.add("hidden")
-      dashSec.classList.remove("hidden")
-      loadAdminData()
+    if (user === "admin" && pass === "admin123") {
+        sessionStorage.setItem("admin_logged_in", "true");
+        location.reload();   // refresh to trigger dashboard view
     } else {
-      loginSec.classList.remove("hidden")
-      dashSec.classList.add("hidden")
+        alert("❌ Invalid credentials! use admin credentials ");
     }
-  }
 }
+function checkSession() {
+    const isLogged = sessionStorage.getItem("admin_logged_in");
 
-function logoutAdmin() {
-  sessionStorage.removeItem("admin_logged_in")
-  window.location.href = "admin.html"
+    const login = document.getElementById("login-section");
+    const dash  = document.getElementById("dashboard-section");
+
+    if (!login || !dash) return;
+
+    if (isLogged) {
+        login.classList.add("hidden");
+        dash.classList.remove("hidden");
+        loadAdminData();
+    } else {
+        login.classList.remove("hidden");
+        dash.classList.add("hidden");
+    }
 }
-
 function showTab(tabId) {
-  document.querySelectorAll(".admin-tab-content").forEach((el) => el.classList.add("hidden"))
-  document.getElementById(tabId).classList.remove("hidden")
 
-  document.querySelectorAll(".admin-tab-btn").forEach((btn) => btn.classList.remove("active"))
-  event.target.classList.add("active")
+    // hide all tab contents
+    document.querySelectorAll(".admin-tab-content")
+        .forEach(tab => tab.classList.add("hidden"));
+
+    // remove active state
+    document.querySelectorAll(".admin-tab-btn")
+        .forEach(btn => btn.classList.remove("active"));
+
+    // show selected tab
+    document.getElementById(tabId).classList.remove("hidden");
+
+    // highlight active button
+    event.target.classList.add("active");
 }
 
-function loadAdminData() {
-  const packages = JSON.parse(localStorage.getItem("packages"))
-  const pkgTable = document.querySelector("#packagesTable tbody")
-  pkgTable.innerHTML = packages
-    .map(
-      (pkg) => `
-        <tr>
-            <td>${pkg.title}</td>
-            <td>$${pkg.price}</td>
-            <td><button onclick="deletePackage(${pkg.id})">Delete</button></td>
-        </tr>
-    `,
-    )
-    .join("")
 
-  const bookings = JSON.parse(localStorage.getItem("bookings"))
-  const bookTable = document.querySelector("#bookingsTable tbody")
-  bookTable.innerHTML =
-    bookings.length > 0
-      ? bookings
-          .map(
-            (b) => `
+
+async function loadAdminData() {
+
+    const packages = await fetchJSON("get_packages.php");
+    const bookings = await fetchJSON("get_bookings.php");
+
+    /* packages table */
+    document.querySelector("#packagesTable tbody").innerHTML =
+    packages.map(p => `
+        <tr>
+            <td>${p.title}</td>
+            <td>$${p.price}</td>
+            <td><button onclick="deletePackage(${p.id})">Delete</button></td>
+            <td><button onclick="openEdit(${p.id})">Edit</button></td>
+        </tr>
+    `).join("");
+
+    /* bookings table */
+    document.querySelector("#bookingsTable tbody").innerHTML =
+    bookings.map(b => `
         <tr>
             <td>${b.name}</td>
             <td>${b.destination}</td>
-            <td>${b.date}</td>
+            <td>${b.travel_date}</td>
             <td>${b.phone}</td>
         </tr>
-    `,
-          )
-          .join("")
-      : '<tr><td colspan="4" style="text-align: center; color: #999;">No bookings yet</td></tr>'
+    `).join("");
 }
 
-function addPackage(e) {
-  e.preventDefault()
-  const packages = JSON.parse(localStorage.getItem("packages"))
+async function addPackage(e) {
+    e.preventDefault();
 
-  const newPkg = {
-    id: Date.now(),
-    title: document.getElementById("pkgTitle").value,
-    image: document.getElementById("pkgImage").value,
-    price: document.getElementById("pkgPrice").value,
-    desc: document.getElementById("pkgDesc").value,
-  }
+    let fd = new FormData();
 
-  packages.push(newPkg)
-  localStorage.setItem("packages", JSON.stringify(packages))
-  e.target.reset()
-  loadAdminData()
-  alert("✅ Package Added Successfully!")
+    fd.append("title", pkgTitle.value);
+    fd.append("image", pkgImage.value);
+    fd.append("price", pkgPrice.value);
+    fd.append("description", pkgDesc.value);
+
+    // EDIT MODE or ADD MODE
+    const editId = e.target.dataset.editId;
+
+    if (editId) fd.append("id", editId);
+
+    const url = editId ? "edit_package.php" : "add_package.php";
+
+    let res = await fetchJSON(url, {
+        method: "POST",
+        body: fd
+    });
+
+    if(res.success){
+        alert(editId ? "✅ Package Updated" : "✅ Package Added");
+        e.target.reset();
+        delete e.target.dataset.editId;
+        loadAdminData();
+    }
 }
 
-function deletePackage(id) {
-  if (confirm("Are you sure you want to delete this package?")) {
-    let packages = JSON.parse(localStorage.getItem("packages"))
-    packages = packages.filter((p) => p.id !== id)
-    localStorage.setItem("packages", JSON.stringify(packages))
-    loadAdminData()
-    alert("✅ Package Deleted!")
-  }
+
+async function deletePackage(id){
+    let fd = new FormData();
+    fd.append("id", id);
+
+    await fetchJSON("delete_package.php", {
+        method: "POST",
+        body: fd
+    });
+
+    loadAdminData();
+}
+function logoutAdmin() {
+    sessionStorage.removeItem("admin_logged_in");
+    window.location.href = "admin.html";
+}
+async function openEdit(id) {
+
+    const res = await fetchJSON("get_packages.php");
+    const pkg = res.find(p => String(p.id) === String(id));
+
+    document.getElementById("pkgTitle").value = pkg.title;
+    document.getElementById("pkgImage").value = pkg.image;
+    document.getElementById("pkgPrice").value = pkg.price;
+    document.getElementById("pkgDesc").value = pkg.desc_text || pkg.description;
+
+    // switch form to UPDATE mode
+    document.querySelector("form").dataset.editId = id;
 }

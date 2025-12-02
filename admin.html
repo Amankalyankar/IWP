@@ -3,34 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - TravelPro</title>
+    <title>Admin Panel - Avipro Travels</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">✈️ TravelPro Admin</div>
+            <div class="logo"><a href="index.html">✈️ Avipro Travels Admin</a></div>
             <ul class="nav-links">
-                <li><a href="index.html">View Site</a></li>
-                <li><a href="#" onclick="logoutAdmin()" class="logout-link">Logout</a></li>
+                
+                <li onclick="logoutAdmin()" class="logout-link">Logout</li>
             </ul>
         </div>
     </nav>
 
     <div id="login-section" class="container section-padding" style="max-width: 400px; margin: 50px auto;">
         <div class="form-wrapper">
-            <h1 style="text-align: center;">Admin Login</h1>
-            <p class="form-subtitle" style="text-align: center;">Credentials: admin / admin123</p>
+            <h1 style="text-align: center; margin-bottom: 20px;">Admin Login</h1>
+
+            <p class="form-subtitle" style="text-align: center;"></p>
             <form onsubmit="adminLogin(event)">
                 <div class="form-group">
                     <label for="adminUser">Username</label>
-                    <input type="text" id="adminUser" placeholder="admin" required autofocus>
+                    <input type="text" id="adminUser" required autofocus>
                 </div>
                 <div class="form-group">
                     <label for="adminPass">Password</label>
-                    <input type="password" id="adminPass" placeholder="admin123" required>
+                    <input type="password" id="adminPass"  required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-large">Login</button>
+                <button type="submit" class="btn btn-primary btn-medium" style="margin-top: 20px;">Login</button>
             </form>
         </div>
     </div>
@@ -107,9 +108,7 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <p>&copy; 2025 TravelPro. All rights reserved. | <a href="#">Privacy Policy</a></p>
-    </footer>
+
 
     <script src="script.js"></script>
     <script>
