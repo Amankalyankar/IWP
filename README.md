@@ -31,13 +31,7 @@ http://localhost/phpmyadmin
 Create database:
 travelpro
 
-Import DB or run the sql query given in "SQL Query" file in the SQL section 
-
-Click Import
-
-Select db file (baadmei bhejunga db file)
-
-Click Go
+run the sql query given in "SQL Query" file in the SQL section 
 
 Database ready.
 
