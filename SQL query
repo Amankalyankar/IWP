@@ -1,0 +1,64 @@
+CREATE DATABASE IF NOT EXISTS travelpro;
+USE travelpro;
+
+CREATE TABLE IF NOT EXISTS packages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    image TEXT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    description TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    destination VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    persons INT NOT NULL,
+    travel_date DATE NOT NULL,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS site_content (
+    id INT PRIMARY KEY,
+    banner_title VARCHAR(255),
+    banner_subtitle VARCHAR(255),
+    about_text TEXT,
+    contact_email VARCHAR(255),
+    contact_phone VARCHAR(50),
+    contact_hours VARCHAR(100)
+);
+
+INSERT INTO site_content
+(id, banner_title, banner_subtitle, about_text, contact_email, contact_phone, contact_hours)
+VALUES
+(1,
+ 'Explore the World with Avipro',
+ 'Your trusted partner for unforgettable journeys',
+ 'Avipro Travels is a premier travel company offering personalized travel experiences across the globe. We specialize in crafting tours that blend comfort, culture, and adventure.',
+ 'hello@aviprotravels.com',
+ '+91 9876543210',
+ 'Mon - Sat | 9:00 AM - 6:00 PM'
+);
+
+INSERT INTO packages (title,image,price,description) VALUES
+(
+ 'Paris Romantic Getaway',
+ 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34',
+ 1200.00,
+ 'Explore the City of Light with luxury stays and sightseeing tours.'
+),
+(
+ 'Bali Tropical Paradise',
+ 'https://images.unsplash.com/photo-1537996194471-e657df975ab4',
+ 850.00,
+ 'Relax on beautiful beaches and experience authentic Balinese culture.'
+),
+(
+ 'Swiss Alps Expedition',
+ 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7',
+ 1500.00,
+ 'Adventure tour through breathtaking mountains and scenic landscapes.'
+);

@@ -20,8 +20,9 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1>Explore the World with Us</h1>
-            <p>Discover unforgettable journeys to breathtaking destinations</p>
+            <h1 id="bannerTitle"></h1>
+            <p id="bannerSubtitle"></p>
+
             <a href="#featured" class="btn btn-primary btn-large">Discover Tours</a>
         </div>
     </header>
@@ -68,7 +69,7 @@
     <section id="about" class="container section-padding">
         <div class="content-box">
             <h2>Why Choose Avipro Travels?</h2>
-            <p>We are a premier travel agency dedicated to bringing you the best experiences across the globe. From mountain peaks to pristine beaches, we carefully curate journeys that inspire wonder and create lasting memories.</p>
+            <p id="aboutText"></p>
             <div class="features">
                 <div class="feature">
                     <span class="feature-icon">🌍</span>
@@ -129,18 +130,30 @@
             <p style="margin-bottom: 2rem;">Have questions? We're here to help plan your perfect getaway.</p>
             <div class="contact-info">
                 <div class="contact-item">
-                    <strong>📧 Email:</strong> chitthi-likho-aur-bhejo@gmail.com
+                    <strong>📧 Email:</strong> <span id="contactEmail"></span>
+
                 </div>
                 <div class="contact-item">
-                    <strong>📞 Phone:</strong> 1234567899
+                    <span id="contactPhone"></span>
                 </div>
                 <div class="contact-item">
-                    <strong>🕐 Hours:</strong> jab karna hai call karlo , mai uthaunga hi nahi
+                    <span id="contactHours"></span>
                 </div>
             </div>
         </div>
     </section>
 
-    
+<script src="script.js"></script>
+<script>
+fetchJSON("get_content.php").then(d => {
+  document.getElementById("bannerTitle").innerText   = d.banner_title;
+  document.getElementById("bannerSubtitle").innerText = d.banner_subtitle;
+  document.getElementById("aboutText").innerText     = d.about_text;
+  document.getElementById("contactEmail").innerText  = d.contact_email;
+  document.getElementById("contactPhone").innerText  = d.contact_phone;
+  document.getElementById("contactHours").innerText  = d.contact_hours;
+});
+</script>
+
 </body>
 </html>

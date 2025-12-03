@@ -44,6 +44,9 @@
             <div class="admin-tabs">
                 <button class="admin-tab-btn active" onclick="showTab('manage-packages')">📦 Manage Packages</button>
                 <button class="admin-tab-btn" onclick="showTab('view-bookings')">📅 View Bookings</button>
+                <button class="admin-tab-btn" onclick="showTab('site-content', this)"
+>🌐 Site Content</button>
+
             </div>
 
             <div id="manage-packages" class="admin-tab-content">
@@ -88,6 +91,48 @@
                     </div>
                 </div>
             </div>
+<div id="site-content" class="admin-tab-content hidden">
+
+  <div class="form-wrapper">
+    <h3>Update Website Content</h3>
+
+    <form onsubmit="updateSiteContent(event)">
+
+      <div class="form-group">
+        <label>Banner Title</label>
+        <input type="text" id="bannerTitle">
+      </div>
+
+      <div class="form-group">
+        <label>Banner Subtitle</label>
+        <input type="text" id="bannerSubtitle">
+      </div>
+
+      <div class="form-group">
+        <label>About Text</label>
+        <textarea id="aboutText" rows="4"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input type="email" id="contactEmail">
+      </div>
+
+      <div class="form-group">
+        <label>Contact Phone</label>
+        <input type="text" id="contactPhone">
+      </div>
+
+      <div class="form-group">
+        <label>Contact Hours</label>
+        <input type="text" id="contactHours">
+      </div>
+
+      <button class="btn btn-primary">Update Content</button>
+    </form>
+  </div>
+
+</div>
 
             <div id="view-bookings" class="admin-tab-content hidden">
                 <h3>Recent Booking Enquiries</h3>

@@ -1,18 +1,29 @@
 <?php
-include "db.php";
+header("Content-Type: application/json");
 
-$title=$_POST['title'];
-$image=$_POST['image'];
-$price=$_POST['price'];
-$desc=$_POST['description'];
+require "db.php";
 
-$stmt=$conn->prepare(
-"INSERT INTO packages(title,image,price,description)
- VALUES(?,?,?,?)"
+$title = $_POST['title'] ?? "";
+$image = $_POST['image'] ?? "";
+$price = $_POST['price'] ?? "";
+$desc  = $_POST['description'] ?? "";
+
+if (!$title || !$image || !$price || !$desc) {
+    echo json_encode([
+        "success" => false,
+        "error" => "Missing required data"
+    ]);
+    exit;
+}
+
+$stmt = $conn->prepare(
+    "INSERT INTO packages (title,image,price,description)
+     VALUES (?,?,?,?)"
 );
 
-$stmt->bind_param("ssds",$title,$image,$price,$desc);
+$stmt->bind_param("ssds", $title, $image, $price, $desc);
 
 $stmt->execute();
 
-echo json_encode(["success"=>true]);
+echo json_encode(["success" => true]);
+exit;

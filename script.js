@@ -150,30 +150,26 @@ function checkSession() {
     if (!login || !dash) return;
 
     if (isLogged) {
-        login.classList.add("hidden");
-        dash.classList.remove("hidden");
-        loadAdminData();
-    } else {
-        login.classList.remove("hidden");
-        dash.classList.add("hidden");
-    }
+    login.classList.add("hidden");
+    dash.classList.remove("hidden");
+    loadAdminData();
+    loadSiteContent();   // ✅ NEW
 }
-function showTab(tabId) {
 
-    // hide all tab contents
+}
+function showTab(tabId, btn) {
+
     document.querySelectorAll(".admin-tab-content")
         .forEach(tab => tab.classList.add("hidden"));
 
-    // remove active state
     document.querySelectorAll(".admin-tab-btn")
-        .forEach(btn => btn.classList.remove("active"));
+        .forEach(b => b.classList.remove("active"));
 
-    // show selected tab
     document.getElementById(tabId).classList.remove("hidden");
 
-    // highlight active button
-    event.target.classList.add("active");
+    btn.classList.add("active");
 }
+
 
 
 
@@ -207,33 +203,53 @@ async function loadAdminData() {
 
 async function addPackage(e) {
     e.preventDefault();
+    e.stopPropagation();
 
-    let fd = new FormData();
+    const form = e.target;
+    const editId = form.dataset.editId;
 
+    const fd = new FormData();
     fd.append("title", pkgTitle.value);
     fd.append("image", pkgImage.value);
     fd.append("price", pkgPrice.value);
     fd.append("description", pkgDesc.value);
 
-    // EDIT MODE or ADD MODE
-    const editId = e.target.dataset.editId;
+    let url = "add_package.php";
 
-    if (editId) fd.append("id", editId);
+    if (editId) {
+        fd.append("id", editId);
+        url = "edit_package.php";
+    }
 
-    const url = editId ? "edit_package.php" : "add_package.php";
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            body: fd,
+            headers: {
+                "Accept": "application/json"
+            }
+        }).then(r => r.json());
 
-    let res = await fetchJSON(url, {
-        method: "POST",
-        body: fd
-    });
+        if (!res.success) {
+            alert("❌ Operation failed");
+            return;
+        }
 
-    if(res.success){
-        alert(editId ? "✅ Package Updated" : "✅ Package Added");
-        e.target.reset();
-        delete e.target.dataset.editId;
+        alert(editId ? "✅ Package updated" : "✅ Package added");
+
+        form.reset();
+        delete form.dataset.editId;
+        form.querySelector("button").innerText = "Add Package";
+
         loadAdminData();
+
+    } catch (err) {
+        console.error("JSON fail:", err);
+        alert("❌ Server returned invalid JSON — see console");
     }
 }
+
+
 
 
 async function deletePackage(id){
@@ -253,14 +269,51 @@ function logoutAdmin() {
 }
 async function openEdit(id) {
 
-    const res = await fetchJSON("get_packages.php");
-    const pkg = res.find(p => String(p.id) === String(id));
+    const packages = await fetchJSON("get_packages.php");
+    const pkg = packages.find(p => String(p.id) === String(id));
 
-    document.getElementById("pkgTitle").value = pkg.title;
-    document.getElementById("pkgImage").value = pkg.image;
-    document.getElementById("pkgPrice").value = pkg.price;
-    document.getElementById("pkgDesc").value = pkg.desc_text || pkg.description;
+    pkgTitle.value = pkg.title;
+    pkgImage.value = pkg.image;
+    pkgPrice.value = pkg.price;
+    pkgDesc.value = pkg.desc_text || pkg.description;
 
-    // switch form to UPDATE mode
-    document.querySelector("form").dataset.editId = id;
+    // ✅ TARGET THE CORRECT FORM (package form)
+    const form = document.querySelector("#manage-packages form");
+
+    // ✅ STORE EDIT ID ON THE RIGHT FORM
+    form.dataset.editId = id;
+
+    // ✅ CHANGE BUTTON LABEL
+    form.querySelector("button").innerText = "Update Package";
+}
+async function loadSiteContent() {
+
+    const data = await fetchJSON("get_content.php");
+
+    bannerTitle.value   = data.banner_title;
+    bannerSubtitle.value = data.banner_subtitle;
+    aboutText.value     = data.about_text;
+    contactEmail.value  = data.contact_email;
+    contactPhone.value  = data.contact_phone;
+    contactHours.value  = data.contact_hours;
+}
+
+async function updateSiteContent(e) {
+    e.preventDefault();
+
+    let fd = new FormData();
+
+    fd.append("title", bannerTitle.value);
+    fd.append("subtitle", bannerSubtitle.value);
+    fd.append("about", aboutText.value);
+    fd.append("email", contactEmail.value);
+    fd.append("phone", contactPhone.value);
+    fd.append("hours", contactHours.value);
+
+    await fetchJSON("update_content.php", {
+        method: "POST",
+        body: fd
+    });
+
+    alert("✅ Site Content Updated");
 }
