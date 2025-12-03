@@ -1,21 +1,13 @@
-# ✈️ Avipro Travels – Local Setup Guide (Unofficial)
+# ✈️ Avipro Travels – Local Setup Guide 
 
-This is a PHP + MySQL dynamic travel booking CMS project.  
-**It will NOT run by opening HTML directly.**  
-You must use XAMPP.
-
----
-
-## ✅ What You Need
+##  What You Need
 
 - XAMPP installed  
   👉 https://www.apachefriends.org
 
 ---
 
-## 🚀 How to Run the Project
-
-##  Move Project Folder
+##  How to Run the Project
 
 Extract the ZIP and copy the project folder to:
 
@@ -26,9 +18,9 @@ C:\xampp\htdocs\AVIPRO-TRAVELS
 
 Open XAMPP Control Panel and start:
 
-✅ Apache
+ Apache
 
-✅ MySQL
+ MySQL
 
 ## Setup Database
 
@@ -39,7 +31,7 @@ http://localhost/phpmyadmin
 Create database:
 travelpro
 
-Import DB:
+Import DB or run the sql query given in "SQL Query" file in the SQL section 
 
 Click Import
 
@@ -47,7 +39,7 @@ Select db file (baadmei bhejunga db file)
 
 Click Go
 
-✅ Database ready.
+Database ready.
 
 ## Open Website
 
@@ -67,29 +59,3 @@ Login:
 Username: admin
 Password: admin123
 
-### 🛠 CMS Features
-
-📦 Add packages
-
-✏️ Edit packages
-
-❌ Delete packages
-
-🖼 Manage image URLs & descriptions
-
-📋 View booking/enquiry requests
-
-### Booking Flow
-
-Open Packages page
-
-Choose a package
-
-Click Explore
-
-Hit Book Now
-
-Fill form and submit
-
-✅ Booking saved to database
-✅ Booking visible inside Admin → View Bookings
